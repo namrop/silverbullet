@@ -30,6 +30,7 @@ type SyncEngineEvents = {
 };
 
 export type SyncConfig = {
+  disabled?: boolean;
   syncDocuments?: boolean;
   syncIgnore?: string;
 };
@@ -104,6 +105,10 @@ export class SyncEngine extends EventEmitter<SyncEngineEvents> {
   }
 
   isSyncCandidate(path: string): boolean {
+    if (this.syncConfig.disabled) {
+      return false;
+    }
+
     // ALWAYS sync plugs
     if (path.endsWith(".plug.js")) {
       return true;
@@ -117,6 +122,11 @@ export class SyncEngine extends EventEmitter<SyncEngineEvents> {
   }
 
   async syncSpace(): Promise<number> {
+    if (this.syncConfig.disabled) {
+      void this.emit("spaceSyncComplete", 0);
+      return 0;
+    }
+
     try {
       const operations = await this.spaceSync.syncFiles(this.snapshot);
       if (operations !== -1) {
@@ -131,6 +141,11 @@ export class SyncEngine extends EventEmitter<SyncEngineEvents> {
   }
 
   async syncSingleFile(path: string): Promise<number> {
+    if (this.syncConfig.disabled) {
+      void this.emit("fileSyncComplete", path, 0);
+      return 0;
+    }
+
     try {
       const operations = await this.spaceSync.syncSingleFile(
         path,

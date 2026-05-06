@@ -23,6 +23,7 @@ import { diffAndPrepareChanges } from "./codemirror/cm_util.ts";
 import { DocumentEditor } from "./document_editor.ts";
 import { fsEndpoint } from "./spaces/constants.ts";
 import { parseMarkdown } from "./markdown_parser/parser.ts";
+import { shouldAutosaveToSpace } from "../atrium/modes.ts";
 import type { Client } from "./client.ts";
 import type { LocationState } from "./navigator.ts";
 
@@ -59,6 +60,15 @@ export class ContentManager {
             this.client.isReadOnlyMode()
           ) {
             // No unsaved changes, or read-only mode, not gonna save
+            return resolve();
+          }
+
+          if (!shouldAutosaveToSpace(this.client.bootConfig.atriumMode)) {
+            console.info(
+              "Atrium mode blocks direct save-to-space",
+              this.client.bootConfig.atriumMode,
+              this.client.currentPath(),
+            );
             return resolve();
           }
 

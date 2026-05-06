@@ -38,10 +38,22 @@ A later Atrium service/core layer can transform an accepted proposal into an app
 Source:
 
 - `atrium/transactions.ts`
+- `atrium/modes.ts`
+- `atrium/source_fidelity.ts`
 
 Tests:
 
 - `atrium/transactions.test.ts`
+- `atrium/modes.test.ts`
+- `atrium/source_fidelity.test.ts`
+- `client/service_worker/sync_engine.test.ts`
+
+Client integration seams:
+
+- `client/boot.ts` accepts optional `?atriumMode=inspect_only|projection_edit|canon_transaction`.
+- `client/content_manager.ts` blocks direct save-to-space when an Atrium mode is active.
+- `client/service_worker.ts` passes disabled sync config when an Atrium mode is active.
+- `client/service_worker/sync_engine.ts` no-ops sync requests when disabled.
 
 Exports:
 
@@ -104,7 +116,10 @@ The current tests assert that:
 2. a valid canon transaction proposal is accepted;
 3. transaction proposals cannot pre-authorize commit;
 4. hashes must be 64-character lowercase hex SHA-256 values;
-5. canon transactions require visible diff and human confirmation flags.
+5. canon transactions require visible diff and human confirmation flags;
+6. source-fidelity helpers preserve exact UTF-8 bytes, including trailing spaces, tabs, frontmatter ordering, and wiki-link text;
+7. Atrium modes default closed for autosave-to-space, service-worker sync, shell, and direct canon writes;
+8. disabled service-worker sync rejects all candidates, including plugs.
 
 ## Next implementation steps
 

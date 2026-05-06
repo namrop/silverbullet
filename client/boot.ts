@@ -15,6 +15,7 @@ import "./lib/polyfills.ts";
 import type { BootConfig, ServiceWorkerTargetMessage } from "./types/ui.ts";
 import { BoxProxy } from "./lib/box_proxy.ts";
 import { importKey } from "@silverbulletmd/silverbullet/lib/crypto";
+import { isAtriumMode } from "../atrium/modes.ts";
 import "./debug.ts";
 const logger = initLogger("[Client]");
 
@@ -274,6 +275,13 @@ async function augmentBootConfig(bootConfig: BootConfig, config: Config) {
   const urlParams = new URLSearchParams(location.search);
   if (urlParams.has("readOnly")) {
     bootConfig.readOnly = true;
+  }
+  if (urlParams.has("atriumMode")) {
+    const atriumMode = urlParams.get("atriumMode");
+    if (!isAtriumMode(atriumMode)) {
+      throw new Error(`Invalid Atrium editor mode: ${String(atriumMode)}`);
+    }
+    bootConfig.atriumMode = atriumMode;
   }
   if (urlParams.has("disableSpaceLua")) {
     bootConfig.disableSpaceLua = true;

@@ -19,6 +19,7 @@ import { throttleImmediately } from "@silverbulletmd/silverbullet/lib/async";
 import { wrongSpacePathError } from "@silverbulletmd/silverbullet/constants";
 import type { KvPrimitives } from "./data/kv_primitives.ts";
 import { EncryptedKvPrimitives } from "./data/encrypted_kv_primitives.ts";
+import { shouldServiceWorkerSync } from "../atrium/modes.ts";
 
 const logger = initLogger("[Service Worker]");
 
@@ -153,6 +154,7 @@ self.addEventListener("message", async (event: any) => {
           "Service worker already configured, just updating configs",
         );
         proxyRouter.syncEngine!.setSyncConfig({
+          disabled: !shouldServiceWorkerSync(config.atriumMode),
           syncDocuments: config.syncDocuments,
           syncIgnore: config.syncIgnore,
         });
@@ -240,6 +242,7 @@ self.addEventListener("message", async (event: any) => {
         // Now let's setup sync
         const syncEngine = new SyncEngine(kv, local, remote);
         syncEngine.setSyncConfig({
+          disabled: !shouldServiceWorkerSync(config.atriumMode),
           syncDocuments: config.syncDocuments,
           syncIgnore: config.syncIgnore,
         });

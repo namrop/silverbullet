@@ -10,6 +10,7 @@ import type {
   PageMeta,
 } from "@silverbulletmd/silverbullet/type/index";
 import type { Path } from "@silverbulletmd/silverbullet/lib/ref";
+import type { AtriumEditorMode } from "../../atrium/transactions.ts";
 import type { SyncStatus } from "../spaces/sync.ts";
 
 export type PanelConfig = {
@@ -176,6 +177,9 @@ export type BootConfig = {
   indexPage: string;
   readOnly: boolean;
   logPush?: boolean;
+  // Atrium authority mode. Omitted preserves upstream SilverBullet behavior.
+  atriumMode?: AtriumEditorMode;
+
   // Sync configuration
   syncDocuments?: boolean;
   syncIgnore?: string;

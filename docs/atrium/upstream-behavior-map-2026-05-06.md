@@ -173,6 +173,11 @@ Started in this branch:
 
 - `atrium/transactions.ts` — pure initial transaction schema/validator module.
 - `atrium/transactions.test.ts` — Vitest coverage for mode names, commit-denial, SHA-256 shape, and human review requirements.
+- `atrium/source_fidelity.ts` / `atrium/source_fidelity.test.ts` — exact UTF-8 byte snapshot/hash helpers and preservation tests for whitespace/frontmatter/link surfaces.
+- `atrium/modes.ts` / `atrium/modes.test.ts` — explicit Atrium authority-mode config; all Atrium modes default closed for direct canon writes, service-worker sync, autosave-to-space, and shell.
+- `client/boot.ts` / `client/types/ui.ts` — optional `?atriumMode=` boot config path; omitted mode preserves upstream behavior.
+- `client/content_manager.ts` — direct save-to-space is blocked when an Atrium mode is active.
+- `client/service_worker.ts` / `client/service_worker/sync_engine.ts` — service-worker sync can be disabled by Atrium mode; disabled sync rejects all candidates including plugs and no-ops single/space sync requests.
 
 Not yet changed:
 

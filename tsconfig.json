@@ -20,7 +20,8 @@
     "plugs/**/*",
     "bin/**/*",
     "build_*.ts",
-    "version.ts"
+    "version.ts",
+    "atrium/**/*"
   ],
   "exclude": ["node_modules", "dist", "client_bundle", "website"]
 }
