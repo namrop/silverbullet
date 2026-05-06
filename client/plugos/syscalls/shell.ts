@@ -1,6 +1,7 @@
 import type { SysCallMapping } from "../system.ts";
 import type { Client } from "../../client.ts";
 import { fsEndpoint } from "../../spaces/constants.ts";
+import { shouldEnableShell } from "../../../atrium/modes.ts";
 
 export function shellSyscalls(client: Client): SysCallMapping {
   return {
@@ -10,6 +11,11 @@ export function shellSyscalls(client: Client): SysCallMapping {
       args: string[],
       stdin?: string,
     ): Promise<{ stdout: string; stderr: string; code: number }> => {
+      if (!shouldEnableShell(client.bootConfig.atriumMode)) {
+        throw new Error(
+          `Shell execution is disabled in Atrium mode: ${String(client.bootConfig.atriumMode)}`,
+        );
+      }
       if (!client.httpSpacePrimitives) {
         throw new Error("Not supported in fully local mode");
       }

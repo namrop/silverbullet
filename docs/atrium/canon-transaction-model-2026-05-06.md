@@ -40,13 +40,16 @@ Source:
 - `atrium/transactions.ts`
 - `atrium/modes.ts`
 - `atrium/source_fidelity.ts`
+- `atrium/proposals.ts`
 
 Tests:
 
 - `atrium/transactions.test.ts`
 - `atrium/modes.test.ts`
 - `atrium/source_fidelity.test.ts`
+- `atrium/proposals.test.ts`
 - `client/service_worker/sync_engine.test.ts`
+- `client/plugos/syscalls/shell.test.ts`
 
 Client integration seams:
 
@@ -54,6 +57,7 @@ Client integration seams:
 - `client/content_manager.ts` blocks direct save-to-space when an Atrium mode is active.
 - `client/service_worker.ts` passes disabled sync config when an Atrium mode is active.
 - `client/service_worker/sync_engine.ts` no-ops sync requests when disabled.
+- `client/plugos/syscalls/shell.ts` blocks `shell.run` before authenticated fetch when an Atrium mode is active.
 
 Exports:
 
@@ -119,13 +123,13 @@ The current tests assert that:
 5. canon transactions require visible diff and human confirmation flags;
 6. source-fidelity helpers preserve exact UTF-8 bytes, including trailing spaces, tabs, frontmatter ordering, and wiki-link text;
 7. Atrium modes default closed for autosave-to-space, service-worker sync, shell, and direct canon writes;
-8. disabled service-worker sync rejects all candidates, including plugs.
+8. disabled service-worker sync rejects all candidates, including plugs;
+9. canon update proposals are built from exact source snapshots and retain base/proposed SHA-256 integrity;
+10. shell syscall execution is blocked in Atrium modes before authenticated fetch, while omitted mode preserves upstream shell behavior.
 
 ## Next implementation steps
 
-1. Add source-fidelity fixture tests.
-2. Add an Atrium mode config object and tests.
-3. Gate autosave in Atrium modes.
-4. Gate service-worker local write/sync behavior in Atrium modes.
-5. Replace direct canon file writes with transaction proposal submission.
-6. Split durable transaction validation/atomic-write logic toward Atrium Core Service once the shape stabilizes.
+1. Add/create/delete/move proposal helpers once the first update path is wired into UI action.
+2. Add explicit UI proposal action surface.
+3. Replace direct canon file writes with transaction proposal submission.
+4. Split durable transaction validation/atomic-write logic toward Atrium Core Service once the shape stabilizes.

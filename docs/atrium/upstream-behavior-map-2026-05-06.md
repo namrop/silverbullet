@@ -175,16 +175,16 @@ Started in this branch:
 - `atrium/transactions.test.ts` — Vitest coverage for mode names, commit-denial, SHA-256 shape, and human review requirements.
 - `atrium/source_fidelity.ts` / `atrium/source_fidelity.test.ts` — exact UTF-8 byte snapshot/hash helpers and preservation tests for whitespace/frontmatter/link surfaces.
 - `atrium/modes.ts` / `atrium/modes.test.ts` — explicit Atrium authority-mode config; all Atrium modes default closed for direct canon writes, service-worker sync, autosave-to-space, and shell.
+- `atrium/proposals.ts` / `atrium/proposals.test.ts` — update-proposal adapter that derives base/proposed hashes from exact source snapshots and emits a non-committing canon transaction proposal.
 - `client/boot.ts` / `client/types/ui.ts` — optional `?atriumMode=` boot config path; omitted mode preserves upstream behavior.
 - `client/content_manager.ts` — direct save-to-space is blocked when an Atrium mode is active.
 - `client/service_worker.ts` / `client/service_worker/sync_engine.ts` — service-worker sync can be disabled by Atrium mode; disabled sync rejects all candidates including plugs and no-ops single/space sync requests.
+- `client/plugos/syscalls/shell.ts` / `client/plugos/syscalls/shell.test.ts` — shell syscall is blocked before authenticated fetch when an Atrium mode is active; omitted mode preserves upstream behavior.
 
 Not yet changed:
 
-- autosave behavior;
-- service worker sync behavior;
 - server write endpoints;
-- shell backend behavior;
+- server shell backend behavior;
 - live Atrium canon;
 - git hooks;
 - deployments.
