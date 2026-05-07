@@ -204,8 +204,12 @@ document.getElementById("login").addEventListener("submit", (e) => {
   const rememberMe = document.getElementById('rememberMe').checked;
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
+  const from = new URLSearchParams(window.location.search).get("from");
   params.append('username', username);
   params.append('password', password);
+  if (from) {
+    params.append('from', from);
+  }
   if (rememberMe) {
     params.append('rememberMe', 'true');
   }

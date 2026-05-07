@@ -125,13 +125,15 @@ safeRun(async () => {
       if (!encryptionKey) {
         // No encryption key, redirecting to the auth page
         console.warn("Not authenticated, redirecting to auth page");
-        location.href = ".auth";
+        const from = `${location.pathname}${location.search}`;
+        location.href = `.auth?from=${encodeURIComponent(from)}`;
         throw new Error("Not authenticated");
       }
     } else {
       // No service worker, no encryption key, redirecting to the auth page
       console.warn("Not authenticated, redirecting to auth page");
-      location.href = ".auth";
+      const from = `${location.pathname}${location.search}`;
+      location.href = `.auth?from=${encodeURIComponent(from)}`;
       throw new Error("Not authenticated");
     }
   } else {
@@ -355,7 +357,12 @@ async function cachedFetch(path: string): Promise<string> {
         "Received an (authentication) redirect, redirecting to URL: " +
           redirectHeader,
       );
-      location.href = redirectHeader;
+      const from = `${location.pathname}${location.search}`;
+      const redirectURL = new URL(redirectHeader, location.href);
+      if (redirectURL.pathname.endsWith("/.auth")) {
+        redirectURL.searchParams.set("from", from);
+      }
+      location.href = `${redirectURL.pathname}${redirectURL.search}`;
       throw notAuthenticatedError;
     }
     const text = await response.text();
