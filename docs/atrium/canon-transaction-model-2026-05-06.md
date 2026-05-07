@@ -42,6 +42,7 @@ Source:
 - `atrium/source_fidelity.ts`
 - `atrium/proposals.ts`
 - `atrium/drafts.ts`
+- `client/atrium_commands.ts`
 
 Tests:
 
@@ -53,6 +54,7 @@ Tests:
 - `client/plugos/syscalls/shell.test.ts`
 - `client/plugos/syscalls/space.test.ts`
 - `client/plugos/syscalls/atrium.test.ts`
+- `client/atrium_commands.test.ts`
 
 Client integration seams:
 
@@ -63,6 +65,7 @@ Client integration seams:
 - `client/plugos/syscalls/shell.ts` blocks `shell.run` before authenticated fetch when an Atrium mode is active.
 - `client/plugos/syscalls/space.ts` blocks direct page/document/file write/delete syscalls when an Atrium mode is active.
 - `client/plugos/syscalls/atrium.ts` exposes bounded Atrium syscalls for current-page canon proposal creation and projection-draft persistence; these syscalls do not write to the SilverBullet space/canon path.
+- `client/atrium_commands.ts` registers explicit command-palette/menu actions for bounded Atrium work: `Atrium: Save Projection Draft` in projection-capable modes and `Atrium: Create Canon Proposal` in `canon_transaction` mode only.
 
 Exports:
 
@@ -133,7 +136,8 @@ The current tests assert that:
 10. shell syscall execution is blocked in Atrium modes before authenticated fetch, while omitted mode preserves upstream shell behavior;
 11. direct space write syscalls are blocked in Atrium modes before touching page/document/file primitives, while omitted mode preserves upstream write behavior;
 12. current-page proposal syscall emits a non-committing `atrium_editor_write_transaction_v0` proposal from exact editor/source snapshots;
-13. current-page projection-draft syscalls persist exact draft text only into client datastore under `atrium_projection_draft_v0`, separated from canon and with `mayCommitCanon: false`.
+13. current-page projection-draft syscalls persist exact draft text only into client datastore under `atrium_projection_draft_v0`, separated from canon and with `mayCommitCanon: false`;
+14. Atrium UI commands are not exposed when `atriumMode` is omitted or `inspect_only`; `projection_edit` exposes only draft persistence, while `canon_transaction` exposes draft persistence and non-committing proposal creation.
 
 ## Projection drafts
 
@@ -155,9 +159,32 @@ whitespaceVisibilityPolicy === "none"
 
 This gives the fork a safe persistence seam for projection/draft state without granting local IndexedDB, plugs, autosave, or service-worker sync the right to mutate Atrium canon.
 
+## Command surface
+
+The current command-palette/menu surface is intentionally narrow:
+
+```text
+projection_edit
+  -> Atrium: Save Projection Draft
+  -> atrium.saveCurrentPageProjectionDraft
+  -> client datastore only
+
+canon_transaction
+  -> Atrium: Save Projection Draft
+  -> atrium.saveCurrentPageProjectionDraft
+  -> client datastore only
+
+canon_transaction
+  -> Atrium: Create Canon Proposal
+  -> atrium.createCurrentPageUpdateProposal
+  -> non-committing atrium_editor_write_transaction_v0
+```
+
+No command calls SilverBullet space write/delete primitives. The command actor currently uses a local bounded surface (`silverbullet-client:atrium-client-command`) and a per-browser-session command session id; durable authenticated actor binding belongs in a later Atrium Service integration slice.
+
 ## Next implementation steps
 
-1. Add/create/delete/move proposal helpers once the first update path is wired into UI action.
-2. Add explicit UI commands/buttons for save projection draft and create canon proposal.
-3. Replace direct canon file writes with transaction proposal submission.
+1. Add create/delete/move proposal helpers after the first update proposal path has enough review UX.
+2. Add a visible proposal/draft review panel that shows base/proposed hashes, stale-base status, and exact diff metadata before any service submission exists.
+3. Design proposal submission toward Atrium Service without applying live canon writes.
 4. Split durable transaction validation/atomic-write logic toward Atrium Core Service once the shape stabilizes.
