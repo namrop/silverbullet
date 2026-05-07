@@ -1,3 +1,5 @@
+import { hashSHA256 } from "../plug-api/lib/crypto.ts";
+
 export type AtriumSourceSnapshot = {
   bytes: Uint8Array;
   byteLength: number;
@@ -29,19 +31,8 @@ export function sourceBytesEqual(left: Uint8Array, right: Uint8Array): boolean {
   return true;
 }
 
-function bytesToHex(bytes: Uint8Array): string {
-  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
-}
-
 async function sha256(bytes: Uint8Array): Promise<string> {
-  if (!globalThis.crypto?.subtle) {
-    throw new Error("Atrium source hashing requires Web Crypto SHA-256 support");
-  }
-
-  const digestInput = new Uint8Array(bytes).buffer;
-  return bytesToHex(
-    new Uint8Array(await globalThis.crypto.subtle.digest("SHA-256", digestInput)),
-  );
+  return hashSHA256(bytes);
 }
 
 export async function createSourceSnapshot(
