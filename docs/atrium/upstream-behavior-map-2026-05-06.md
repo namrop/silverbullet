@@ -141,6 +141,57 @@ Atrium implication:
 - Plugs and shell cannot receive implicit canon write rights.
 - Any future capability must be allowlisted, auditable, and mode-specific.
 
+## Direct space write syscalls
+
+Observed source:
+
+- `client/plugos/syscalls/space.ts`
+
+Current behavior summary:
+
+- Upstream write syscalls expose page/document/file write and delete operations to plugs when write syscalls are registered.
+- These operations call `client.space.writePage`, `client.space.deletePage`, `client.space.writeDocument`, `client.space.deleteDocument`, and underlying file primitives directly.
+
+Atrium implication:
+
+- In Atrium modes, plug syscalls must not become a side door around disabled autosave/sync.
+- Direct write/delete syscalls are now blocked before touching space primitives whenever `atriumMode` is present.
+- Omitted `atriumMode` retains upstream SilverBullet behavior.
+
+Required seam:
+
+```text
+plug/editor intent
+  -> projection draft OR canon transaction proposal
+  -> external Atrium service validation
+```
+
+not:
+
+```text
+plug syscall
+  -> direct local/remote space write
+```
+
+## Atrium proposal and projection-draft syscalls
+
+Observed source:
+
+- `client/plugos/syscalls/atrium.ts`
+- `atrium/proposals.ts`
+- `atrium/drafts.ts`
+
+Current behavior summary:
+
+- `atrium.createCurrentPageUpdateProposal` builds a non-committing canon update proposal from the current editor buffer and base page text.
+- `atrium.saveCurrentPageProjectionDraft`, `atrium.getCurrentPageProjectionDraft`, and `atrium.deleteCurrentPageProjectionDraft` store/retrieve/delete exact projection drafts in the client datastore under an Atrium-specific key prefix.
+- These syscalls do not call SilverBullet space write/delete primitives and do not authorize canon commit.
+
+Atrium implication:
+
+- `canon_transaction` now has a bounded proposal surface that can carry exact source/hash data toward a future Atrium Service endpoint.
+- `projection_edit` now has a bounded draft persistence seam separate from canon, useful for preserving work without silent replay into canon.
+
 ## Source fidelity / whitespace / visibility risk
 
 Atrium-specific constraint:
@@ -176,10 +227,13 @@ Started in this branch:
 - `atrium/source_fidelity.ts` / `atrium/source_fidelity.test.ts` — exact UTF-8 byte snapshot/hash helpers and preservation tests for whitespace/frontmatter/link surfaces.
 - `atrium/modes.ts` / `atrium/modes.test.ts` — explicit Atrium authority-mode config; all Atrium modes default closed for direct canon writes, service-worker sync, autosave-to-space, and shell.
 - `atrium/proposals.ts` / `atrium/proposals.test.ts` — update-proposal adapter that derives base/proposed hashes from exact source snapshots and emits a non-committing canon transaction proposal.
+- `atrium/drafts.ts` — projection-draft model for exact draft state separated from canon and marked `mayCommitCanon: false`.
 - `client/boot.ts` / `client/types/ui.ts` — optional `?atriumMode=` boot config path; omitted mode preserves upstream behavior.
 - `client/content_manager.ts` — direct save-to-space is blocked when an Atrium mode is active.
 - `client/service_worker.ts` / `client/service_worker/sync_engine.ts` — service-worker sync can be disabled by Atrium mode; disabled sync rejects all candidates including plugs and no-ops single/space sync requests.
 - `client/plugos/syscalls/shell.ts` / `client/plugos/syscalls/shell.test.ts` — shell syscall is blocked before authenticated fetch when an Atrium mode is active; omitted mode preserves upstream behavior.
+- `client/plugos/syscalls/space.ts` / `client/plugos/syscalls/space.test.ts` — direct page/document/file write/delete syscalls are blocked before touching primitives in Atrium modes; omitted mode preserves upstream behavior.
+- `client/plugos/syscalls/atrium.ts` / `client/plugos/syscalls/atrium.test.ts` — bounded proposal/draft syscalls for current-page Atrium work surfaces without canon writes.
 
 Not yet changed:
 

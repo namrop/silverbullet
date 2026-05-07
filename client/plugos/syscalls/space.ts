@@ -1,6 +1,7 @@
 import { parseToRef, type Ref } from "@silverbulletmd/silverbullet/lib/ref";
 import type { Client } from "../../client.ts";
 import type { SysCallMapping } from "../system.ts";
+import { shouldAllowDirectSpaceWrites } from "../../../atrium/modes.ts";
 
 import type {
   DocumentMeta,
@@ -103,36 +104,50 @@ export function spaceReadSyscalls(client: Client): SysCallMapping {
 }
 
 export function spaceWriteSyscalls(editor: Client): SysCallMapping {
+  const assertDirectSpaceWritesAllowed = () => {
+    if (!shouldAllowDirectSpaceWrites(editor.bootConfig.atriumMode)) {
+      throw new Error(
+        `Direct space writes are disabled in Atrium mode: ${String(editor.bootConfig.atriumMode)}`,
+      );
+    }
+  };
+
   return {
-    "space.writePage": (
+    "space.writePage": async (
       _ctx,
       name: string,
       text: string,
     ): Promise<PageMeta> => {
+      assertDirectSpaceWritesAllowed();
       return editor.space.writePage(name, text);
     },
     "space.deletePage": async (_ctx, name: string) => {
+      assertDirectSpaceWritesAllowed();
       console.log("Deleting page");
       await editor.space.deletePage(name);
     },
-    "space.writeDocument": (
+    "space.writeDocument": async (
       _ctx,
       name: string,
       data: Uint8Array,
     ): Promise<DocumentMeta> => {
+      assertDirectSpaceWritesAllowed();
       return editor.space.writeDocument(name, data);
     },
     "space.deleteDocument": async (_ctx, name: string) => {
+      assertDirectSpaceWritesAllowed();
       await editor.space.deleteDocument(name);
     },
-    "space.writeFile": (
+    "space.writeFile": async (
       _ctx,
       name: string,
       data: Uint8Array,
     ): Promise<FileMeta> => {
+      assertDirectSpaceWritesAllowed();
       return editor.space.spacePrimitives.writeFile(name, data);
     },
-    "space.deleteFile": (_ctx, name: string) => {
+    "space.deleteFile": async (_ctx, name: string) => {
+      assertDirectSpaceWritesAllowed();
       return editor.space.spacePrimitives.deleteFile(name);
     },
   };

@@ -3,6 +3,9 @@ import {
   ATRIUM_MODE_CONFIGS,
   getAtriumModeConfig,
   isAtriumMode,
+  shouldAllowCanonTransactionProposals,
+  shouldAllowDirectSpaceWrites,
+  shouldAllowProjectionDrafts,
   shouldAutosaveToSpace,
 } from "./modes.ts";
 
@@ -53,5 +56,26 @@ describe("Atrium editor mode config", () => {
     expect(shouldAutosaveToSpace("inspect_only")).toEqual(false);
     expect(shouldAutosaveToSpace("projection_edit")).toEqual(false);
     expect(shouldAutosaveToSpace("canon_transaction")).toEqual(false);
+  });
+
+  test("write/proposal helpers preserve upstream direct writes and gate Atrium authority", () => {
+    expect(shouldAllowDirectSpaceWrites(undefined)).toEqual(true);
+    expect(shouldAllowDirectSpaceWrites("inspect_only")).toEqual(false);
+    expect(shouldAllowDirectSpaceWrites("projection_edit")).toEqual(false);
+    expect(shouldAllowDirectSpaceWrites("canon_transaction")).toEqual(false);
+
+    expect(shouldAllowCanonTransactionProposals(undefined)).toEqual(false);
+    expect(shouldAllowCanonTransactionProposals("inspect_only")).toEqual(false);
+    expect(shouldAllowCanonTransactionProposals("projection_edit")).toEqual(
+      false,
+    );
+    expect(shouldAllowCanonTransactionProposals("canon_transaction")).toEqual(
+      true,
+    );
+
+    expect(shouldAllowProjectionDrafts(undefined)).toEqual(false);
+    expect(shouldAllowProjectionDrafts("inspect_only")).toEqual(false);
+    expect(shouldAllowProjectionDrafts("projection_edit")).toEqual(true);
+    expect(shouldAllowProjectionDrafts("canon_transaction")).toEqual(true);
   });
 });

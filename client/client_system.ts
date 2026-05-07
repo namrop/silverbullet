@@ -40,6 +40,7 @@ import { luaSyscalls } from "./plugos/syscalls/lua.ts";
 import { indexSyscalls } from "./plugos/syscalls/index.ts";
 import { configSyscalls } from "./plugos/syscalls/config.ts";
 import { eventSyscalls } from "./plugos/syscalls/event.ts";
+import { atriumSyscalls } from "./plugos/syscalls/atrium.ts";
 import { DocumentEditorHook } from "./plugos/hooks/document_editor.ts";
 import type { Command } from "./types/command.ts";
 import { SpaceLuaEnvironment } from "./space_lua.ts";
@@ -173,6 +174,7 @@ export class ClientSystem {
       syncSyscalls(this.client),
       clientStoreSyscalls(this.ds),
       configSyscalls(this.client.config),
+      atriumSyscalls(this.client, this.ds),
     );
 
     if (!this.readOnlyMode) {

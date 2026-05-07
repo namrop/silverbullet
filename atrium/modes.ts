@@ -41,7 +41,10 @@ export const ATRIUM_MODE_CONFIGS: Record<AtriumEditorMode, AtriumModeConfig> = {
 } as const;
 
 export function isAtriumMode(value: unknown): value is AtriumEditorMode {
-  return typeof value === "string" && ATRIUM_EDITOR_MODES.includes(value as AtriumEditorMode);
+  return (
+    typeof value === "string" &&
+    ATRIUM_EDITOR_MODES.includes(value as AtriumEditorMode)
+  );
 }
 
 export function getAtriumModeConfig(mode: unknown): AtriumModeConfig {
@@ -74,4 +77,28 @@ export function shouldEnableShell(mode: unknown): boolean {
   }
 
   return getAtriumModeConfig(mode).shell;
+}
+
+export function shouldAllowDirectSpaceWrites(mode: unknown): boolean {
+  if (mode === undefined || mode === null || mode === "") {
+    return true;
+  }
+
+  return getAtriumModeConfig(mode).mayWriteCanonDirectly;
+}
+
+export function shouldAllowCanonTransactionProposals(mode: unknown): boolean {
+  if (mode === undefined || mode === null || mode === "") {
+    return false;
+  }
+
+  return getAtriumModeConfig(mode).mayProposeCanonTransaction;
+}
+
+export function shouldAllowProjectionDrafts(mode: unknown): boolean {
+  if (mode === undefined || mode === null || mode === "") {
+    return false;
+  }
+
+  return getAtriumModeConfig(mode).mayEditProjection;
 }
