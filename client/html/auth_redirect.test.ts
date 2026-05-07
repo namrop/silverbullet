@@ -9,6 +9,14 @@ describe("auth redirect preservation", () => {
     expect(authHtml).toContain("params.append('from', from);");
   });
 
+  it("does not let service-worker registration failure prevent login submit handling", async () => {
+    const authHtml = await readFile("client/html/auth.html", "utf-8");
+
+    expect(authHtml).toContain("if (navigator.serviceWorker) {");
+    expect(authHtml).toContain("navigator.serviceWorker.register(workerURL");
+    expect(authHtml).toContain("console.info(\"Service worker unavailable on auth page\")");
+  });
+
   it("sends unauthenticated client boot through auth with the current path and query", async () => {
     const bootTs = await readFile("client/boot.ts", "utf-8");
 

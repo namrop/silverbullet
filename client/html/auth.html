@@ -189,16 +189,23 @@
         </div>
 
 <script>
-const workerURL = new URL("service_worker.js", document.baseURI);
-console.log("Registering service worker");
-navigator.serviceWorker.register(workerURL, {
-  type: "module",
-  scope: workerURL.pathname.substring(0, workerURL.pathname.lastIndexOf("/") + 1),
-}).then(() => {
-  console.log("Service worker registered");
-});
+if (navigator.serviceWorker) {
+  const workerURL = new URL("service_worker.js", document.baseURI);
+  console.log("Registering service worker");
+  navigator.serviceWorker.register(workerURL, {
+    type: "module",
+    scope: workerURL.pathname.substring(0, workerURL.pathname.lastIndexOf("/") + 1),
+  }).then(() => {
+    console.log("Service worker registered");
+  }).catch((e) => {
+    console.warn("Service worker registration failed on auth page", e);
+  });
+} else {
+  console.info("Service worker unavailable on auth page");
+}
 
 document.getElementById("login").addEventListener("submit", (e) => {
+  e.preventDefault();
   const enableEncryption = document.getElementById('clientEncryption').checked;
   const params = new URLSearchParams();
   const rememberMe = document.getElementById('rememberMe').checked;
@@ -249,7 +256,6 @@ document.getElementById("login").addEventListener("submit", (e) => {
       location.href = body.redirect;
     }
   })
-  e.preventDefault();
 });
 const params = new URLSearchParams(window.location.search);
 const from = params.get("from");
