@@ -34,15 +34,14 @@ function bytesToHex(bytes: Uint8Array): string {
 }
 
 async function sha256(bytes: Uint8Array): Promise<string> {
-  if (globalThis.crypto?.subtle) {
-    const digestInput = new Uint8Array(bytes).buffer;
-    return bytesToHex(
-      new Uint8Array(await globalThis.crypto.subtle.digest("SHA-256", digestInput)),
-    );
+  if (!globalThis.crypto?.subtle) {
+    throw new Error("Atrium source hashing requires Web Crypto SHA-256 support");
   }
 
-  const { createHash } = await import("node:crypto");
-  return createHash("sha256").update(bytes).digest("hex");
+  const digestInput = new Uint8Array(bytes).buffer;
+  return bytesToHex(
+    new Uint8Array(await globalThis.crypto.subtle.digest("SHA-256", digestInput)),
+  );
 }
 
 export async function createSourceSnapshot(
