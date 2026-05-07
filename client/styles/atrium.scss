@@ -1,0 +1,210 @@
+html[data-atrium-mode] {
+  color-scheme: dark;
+
+  --atrium-deep-night: #0b0f1a;
+  --atrium-stone-shadow: #1a2233;
+  --atrium-obsidian-teal: #0e1f24;
+  --atrium-panel: #101827;
+  --atrium-panel-raised: #162036;
+  --atrium-text: #e8edf5;
+  --atrium-text-muted: #9fb0c3;
+  --atrium-solar-gold: #ffc857;
+  --atrium-festival-magenta: #ff2f92;
+  --atrium-andean-turquoise: #00b3a4;
+  --atrium-highland-lime: #a4f000;
+  --atrium-ceremonial-red: #e10600;
+  --atrium-glacial-cyan: #66e6ff;
+  --atrium-royal-amethyst: #9d4edd;
+  --atrium-copper-earth: #c46a2d;
+
+  --ui-accent-color: var(--atrium-solar-gold);
+  --ui-accent-text-color: var(--atrium-solar-gold);
+  --ui-accent-contrast-color: var(--atrium-deep-night);
+  --highlight-color: rgba(255, 200, 87, 0.28);
+  --link-color: var(--atrium-glacial-cyan);
+  --link-missing-color: var(--atrium-solar-gold);
+  --link-invalid-color: var(--atrium-festival-magenta);
+  --meta-color: var(--atrium-solar-gold);
+  --meta-subtle-color: #7f8ea4;
+  --subtle-color: var(--atrium-text-muted);
+  --subtle-background-color: rgba(0, 179, 164, 0.08);
+
+  --root-background-color: var(--atrium-deep-night);
+  --root-color: var(--atrium-text);
+
+  --top-color: var(--atrium-text);
+  --top-background-color: #080c15;
+  --top-border-color: rgba(255, 200, 87, 0.72);
+  --top-sync-error-color: var(--atrium-text);
+  --top-sync-error-background-color: rgba(225, 6, 0, 0.45);
+  --top-saved-color: var(--atrium-highland-lime);
+  --top-unsaved-color: var(--atrium-solar-gold);
+  --top-loading-color: var(--atrium-glacial-cyan);
+
+  --panel-background-color: var(--atrium-panel);
+  --panel-border-color: rgba(0, 179, 164, 0.35);
+
+  --bhs-background-color: var(--atrium-panel);
+  --bhs-border-color: rgba(255, 200, 87, 0.34);
+
+  --modal-color: var(--atrium-text);
+  --modal-background-color: var(--atrium-panel-raised);
+  --modal-border-color: rgba(0, 179, 164, 0.62);
+  --modal-header-label-color: var(--atrium-solar-gold);
+  --modal-help-background-color: rgba(11, 15, 26, 0.92);
+  --modal-help-color: var(--atrium-text-muted);
+  --modal-selected-option-background-color: var(--atrium-solar-gold);
+  --modal-selected-option-color: var(--atrium-deep-night);
+  --modal-hint-background-color: var(--atrium-obsidian-teal);
+  --modal-hint-color: var(--atrium-glacial-cyan);
+  --modal-hint-inactive-background-color: rgba(26, 34, 51, 0.92);
+  --modal-hint-inactive-color: var(--atrium-text-muted);
+  --modal-description-color: #9fb0c3;
+  --modal-selected-option-description-color: #1a2233;
+
+  --notifications-background-color: var(--atrium-panel-raised);
+  --notifications-border-color: rgba(255, 200, 87, 0.75);
+  --notification-info-background-color: rgba(0, 179, 164, 0.24);
+  --notification-error-background-color: rgba(225, 6, 0, 0.45);
+  --notification-warning-background-color: rgba(255, 200, 87, 0.36);
+
+  --button-background-color: var(--atrium-stone-shadow);
+  --button-hover-background-color: #24324a;
+  --button-color: var(--atrium-text);
+  --button-border-color: rgba(102, 230, 255, 0.25);
+  --primary-button-background-color: var(--atrium-solar-gold);
+  --primary-button-hover-background-color: #d89f23;
+  --primary-button-color: var(--atrium-deep-night);
+  --primary-button-border-color: rgba(255, 200, 87, 0.25);
+
+  --text-field-background-color: #0c1322;
+
+  --progress-background-color: var(--atrium-stone-shadow);
+  --progress-sync-color: var(--atrium-andean-turquoise);
+  --progress-index-color: var(--atrium-solar-gold);
+
+  --action-button-background-color: transparent;
+  --action-button-color: #bfd1e6;
+  --action-button-hover-color: var(--atrium-solar-gold);
+  --action-button-active-color: var(--atrium-andean-turquoise);
+
+  --editor-caret-color: var(--atrium-solar-gold);
+  --editor-selection-background-color: rgba(255, 200, 87, 0.24);
+  --editor-panels-bottom-color: var(--atrium-text);
+  --editor-panels-bottom-background-color: #0b111f;
+  --editor-panels-bottom-border-color: rgba(0, 179, 164, 0.36);
+  --editor-completion-detail-color: var(--atrium-text-muted);
+  --editor-completion-detail-selected-color: var(--atrium-deep-night);
+  --editor-list-bullet-color: var(--atrium-andean-turquoise);
+  --editor-heading-color: var(--atrium-solar-gold);
+  --editor-heading-meta-color: rgba(255, 200, 87, 0.55);
+  --editor-hashtag-background-color: rgba(0, 179, 164, 0.22);
+  --editor-hashtag-color: var(--atrium-glacial-cyan);
+  --editor-hashtag-border-color: rgba(0, 179, 164, 0.6);
+  --editor-ruler-color: rgba(255, 200, 87, 0.35);
+  --editor-naked-url-color: var(--link-color);
+  --editor-code-color: #a8b6c8;
+  --editor-link-color: var(--link-color);
+  --editor-link-url-color: var(--link-color);
+  --editor-link-meta-color: var(--meta-subtle-color);
+  --editor-wiki-link-page-background-color: rgba(0, 179, 164, 0.09);
+  --editor-wiki-link-page-color: var(--link-color);
+  --editor-wiki-link-page-missing-color: var(--link-missing-color);
+  --editor-wiki-link-page-invalid-color: var(--link-invalid-color);
+  --editor-wiki-link-color: var(--atrium-royal-amethyst);
+  --editor-command-button-color: var(--atrium-text);
+  --editor-command-button-background-color: rgba(26, 34, 51, 0.88);
+  --editor-command-button-hover-background-color: rgba(0, 179, 164, 0.18);
+  --editor-command-button-meta-color: var(--meta-subtle-color);
+  --editor-command-button-border-color: rgba(102, 230, 255, 0.24);
+  --editor-line-meta-color: var(--meta-subtle-color);
+  --editor-meta-color: var(--meta-color);
+  --editor-table-head-background-color: rgba(255, 200, 87, 0.18);
+  --editor-table-head-color: var(--atrium-solar-gold);
+  --editor-table-even-background-color: rgba(255, 255, 255, 0.035);
+  --editor-blockquote-background-color: rgba(0, 179, 164, 0.08);
+  --editor-blockquote-color: #c6d5e7;
+  --editor-blockquote-border-color: var(--atrium-andean-turquoise);
+  --editor-code-background-color: rgba(255, 255, 255, 0.055);
+  --editor-struct-color: var(--atrium-festival-magenta);
+  --editor-highlight-background-color: var(--highlight-color);
+  --editor-code-comment-color: #77879b;
+  --editor-code-variable-color: var(--atrium-glacial-cyan);
+  --editor-code-typename-color: var(--atrium-highland-lime);
+  --editor-code-string-color: #f2a6d1;
+  --editor-code-number-color: var(--atrium-solar-gold);
+  --editor-code-operator-color: #a9b4c4;
+  --editor-code-info-color: var(--subtle-color);
+  --editor-code-atom-color: var(--atrium-festival-magenta);
+  --editor-frontmatter-background-color: rgba(255, 200, 87, 0.08);
+  --editor-frontmatter-color: #c0c8d5;
+  --editor-frontmatter-marker-color: var(--atrium-festival-magenta);
+  --editor-widget-background-color: rgba(26, 34, 51, 0.72);
+  --editor-task-marker-color: var(--atrium-andean-turquoise);
+  --editor-task-state-color: var(--atrium-text-muted);
+
+  --editor-directive-mark-color: var(--atrium-festival-magenta);
+  --editor-directive-color: var(--atrium-text-muted);
+  --editor-directive-background-color: rgba(157, 78, 221, 0.1);
+
+  --editor-panels-bottom-input-background-color: #0b0f1a;
+  --editor-panels-bottom-button-background-image: linear-gradient(#1a2233, #0b0f1a);
+  --editor-panels-bottom-button-active-background-image: linear-gradient(
+    #0b0f1a,
+    #1a2233
+  );
+}
+
+html[data-atrium-mode] #sb-root {
+  background:
+    radial-gradient(
+      circle at 18% 0%,
+      rgba(255, 47, 146, 0.08),
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 92% 8%,
+      rgba(0, 179, 164, 0.09),
+      transparent 34%
+    ),
+    var(--root-background-color);
+}
+
+html[data-atrium-mode] #sb-top {
+  box-shadow:
+    0 1px 0 rgba(255, 200, 87, 0.2),
+    0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+html[data-atrium-mode] .sb-panel,
+html[data-atrium-mode] .sb-bhs,
+html[data-atrium-mode] .sb-modal-box {
+  scrollbar-color: var(--atrium-andean-turquoise) var(--atrium-deep-night);
+}
+
+html[data-atrium-mode] .sb-modal-box {
+  box-shadow:
+    0 0 0 1px rgba(255, 200, 87, 0.18),
+    0 24px 60px rgba(0, 0, 0, 0.55);
+}
+
+html[data-atrium-mode] .sb-hashtag[data-tag-name] {
+  border: 1px solid var(--editor-hashtag-border-color);
+  box-shadow: inset 0 0 0 1px rgba(102, 230, 255, 0.08);
+}
+
+html[data-atrium-mode] .sb-admonition[admonition="note" i] {
+  --admonition-color: var(--atrium-andean-turquoise);
+}
+
+html[data-atrium-mode] .sb-admonition[admonition="warning" i] {
+  --admonition-color: var(--atrium-solar-gold);
+}
+
+html[data-atrium-mode] .sb-admonition[admonition="danger" i] {
+  --admonition-color: var(--atrium-ceremonial-red);
+}
+
+html[data-atrium-mode] .sb-admonition[admonition="success" i] {
+  --admonition-color: var(--atrium-highland-lime);
+}

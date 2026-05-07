@@ -142,6 +142,12 @@ safeRun(async () => {
 
   await augmentBootConfig(bootConfig!, config!);
 
+  if (bootConfig!.atriumMode) {
+    document.documentElement.dataset.atriumMode = bootConfig!.atriumMode;
+  } else {
+    delete document.documentElement.dataset.atriumMode;
+  }
+
   const isHeadless = new URLSearchParams(location.search).has("headless");
   // Expose headless flag globally so client.init() can detect it after URL params are stripped
   if (isHeadless) {

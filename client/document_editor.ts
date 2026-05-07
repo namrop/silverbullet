@@ -220,6 +220,12 @@ export class DocumentEditor {
     // using media queries
     const theme = document.querySelector("html")?.getAttribute("data-theme");
     doc.querySelector("html")!.setAttribute("data-theme", theme ?? "light");
+    const atriumMode = document
+      .querySelector("html")
+      ?.getAttribute("data-atrium-mode");
+    if (atriumMode) {
+      doc.querySelector("html")!.setAttribute("data-atrium-mode", atriumMode);
+    }
 
     const iframe = document.createElement("iframe");
     iframe.srcdoc = doc.documentElement.outerHTML;
