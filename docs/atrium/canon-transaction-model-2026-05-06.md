@@ -42,6 +42,7 @@ Source:
 - `atrium/source_fidelity.ts`
 - `atrium/proposals.ts`
 - `atrium/drafts.ts`
+- `atrium/callouts.ts`
 - `client/atrium_commands.ts`
 
 Tests:
@@ -50,6 +51,7 @@ Tests:
 - `atrium/modes.test.ts`
 - `atrium/source_fidelity.test.ts`
 - `atrium/proposals.test.ts`
+- `atrium/callouts.test.ts`
 - `client/service_worker/sync_engine.test.ts`
 - `client/plugos/syscalls/shell.test.ts`
 - `client/plugos/syscalls/space.test.ts`
@@ -65,7 +67,7 @@ Client integration seams:
 - `client/plugos/syscalls/shell.ts` blocks `shell.run` before authenticated fetch when an Atrium mode is active.
 - `client/plugos/syscalls/space.ts` blocks direct page/document/file write/delete syscalls when an Atrium mode is active.
 - `client/plugos/syscalls/atrium.ts` exposes bounded Atrium syscalls for current-page canon proposal creation and projection-draft persistence; these syscalls do not write to the SilverBullet space/canon path.
-- `client/atrium_commands.ts` registers explicit command-palette/menu actions for bounded Atrium work: `Atrium: Save Projection Draft` in projection-capable modes and `Atrium: Create Canon Proposal` in `canon_transaction` mode only.
+- `client/atrium_commands.ts` registers explicit command-palette/menu actions for bounded Atrium work: `Atrium: Save Projection Draft` and `Atrium: Insert Librarian Callout` in projection-capable modes, plus `Atrium: Create Canon Proposal` in `canon_transaction` mode only.
 
 Exports:
 
@@ -137,7 +139,8 @@ The current tests assert that:
 11. direct space write syscalls are blocked in Atrium modes before touching page/document/file primitives, while omitted mode preserves upstream write behavior;
 12. current-page proposal syscall emits a non-committing `atrium_editor_write_transaction_v0` proposal from exact editor/source snapshots;
 13. current-page projection-draft syscalls persist exact draft text only into client datastore under `atrium_projection_draft_v0`, separated from canon and with `mayCommitCanon: false`;
-14. Atrium UI commands are not exposed when `atriumMode` is omitted or `inspect_only`; `projection_edit` exposes only draft persistence, while `canon_transaction` exposes draft persistence and non-committing proposal creation.
+14. Atrium UI commands are not exposed when `atriumMode` is omitted or `inspect_only`; `projection_edit` exposes draft persistence and pending librarian callout insertion, while `canon_transaction` exposes draft persistence, pending librarian callout insertion, and non-committing proposal creation.
+15. Atrium librarian callouts use deterministic handles derived from timestamp, path, and editor anchor, format as collapsed markdown callouts, mutate only the current editor buffer, and do not save, persist, or commit canon.
 
 ## Projection drafts
 
@@ -169,15 +172,39 @@ projection_edit
   -> atrium.saveCurrentPageProjectionDraft
   -> client datastore only
 
+projection_edit
+  -> Atrium: Insert Librarian Callout
+  -> collapsed markdown callout in current editor buffer
+  -> no save / no datastore / no canon commit
+
 canon_transaction
   -> Atrium: Save Projection Draft
   -> atrium.saveCurrentPageProjectionDraft
   -> client datastore only
 
 canon_transaction
+  -> Atrium: Insert Librarian Callout
+  -> collapsed markdown callout in current editor buffer
+  -> no save / no datastore / no canon commit
+
+canon_transaction
   -> Atrium: Create Canon Proposal
   -> atrium.createCurrentPageUpdateProposal
   -> non-committing atrium_editor_write_transaction_v0
+```
+
+The callout format is provisional but intentionally structured enough for a future Librarian/Atrium Service intake loop:
+
+```md
+> [!atrium-librarian]- atrium-callout-<timestamp>-<path-slug>-l<line>c<column>
+> schema: atrium_librarian_callout_v0
+> status: pending
+> scope: local
+> path: `<current path>`
+> anchor: line <line>, column <column>
+> created: <ISO timestamp>
+>
+> <Luis note / requested update>
 ```
 
 No command calls SilverBullet space write/delete primitives. The command actor currently uses a local bounded surface (`silverbullet-client:atrium-client-command`) and a per-browser-session command session id; durable authenticated actor binding belongs in a later Atrium Service integration slice.

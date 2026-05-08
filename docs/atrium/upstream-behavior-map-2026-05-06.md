@@ -198,18 +198,22 @@ Observed source:
 
 - `client/atrium_commands.ts`
 - `client/client_system.ts`
+- `atrium/callouts.ts`
 
 Current behavior summary:
 
 - Commands are registered directly with the client command hook, not through a plug manifest.
 - `Atrium: Save Projection Draft` is registered only when `atriumMode` is `projection_edit` or `canon_transaction`.
+- `Atrium: Insert Librarian Callout` is registered only when `atriumMode` is `projection_edit` or `canon_transaction`; it prompts for Luis's note and inserts a collapsed markdown callout into the current editor buffer.
 - `Atrium: Create Canon Proposal` is registered only when `atriumMode` is `canon_transaction`.
 - No Atrium command is exposed when `atriumMode` is omitted or when mode is `inspect_only`.
-- Command actions delegate to the bounded Atrium syscalls and inherit their no-canon-write constraints.
+- Draft/proposal command actions delegate to the bounded Atrium syscalls and inherit their no-canon-write constraints.
+- The librarian callout command does not call SilverBullet space write/delete primitives, does not save, and does not persist to the client datastore; it only changes the current editor buffer so Luis can include or discard the note before saving a projection draft or creating a canon proposal.
 
 Atrium implication:
 
 - The user now has explicit actions for the two safe editor surfaces without re-enabling autosave, service-worker sync, or direct plug space writes.
+- Pending human callouts are now first-class editor-buffer objects: they can serve as provisional Librarian prompts with deterministic handles while remaining ordinary Markdown until a later service intake loop exists.
 - UI action availability follows mode policy rather than ambient upstream write semantics.
 - Actor binding is still local/browser-session metadata; it is not durable identity proof or Atrium Service authorization.
 
@@ -255,7 +259,7 @@ Started in this branch:
 - `client/plugos/syscalls/shell.ts` / `client/plugos/syscalls/shell.test.ts` — shell syscall is blocked before authenticated fetch when an Atrium mode is active; omitted mode preserves upstream behavior.
 - `client/plugos/syscalls/space.ts` / `client/plugos/syscalls/space.test.ts` — direct page/document/file write/delete syscalls are blocked before touching primitives in Atrium modes; omitted mode preserves upstream behavior.
 - `client/plugos/syscalls/atrium.ts` / `client/plugos/syscalls/atrium.test.ts` — bounded proposal/draft syscalls for current-page Atrium work surfaces without canon writes.
-- `client/atrium_commands.ts` / `client/atrium_commands.test.ts` — explicit command-palette/menu actions for saving projection drafts and creating non-committing canon proposals, exposed only in compatible Atrium modes.
+- `client/atrium_commands.ts` / `client/atrium_commands.test.ts` — explicit command-palette/menu actions for saving projection drafts, inserting deterministic pending librarian callouts into the editor buffer, and creating non-committing canon proposals, exposed only in compatible Atrium modes.
 
 Not yet changed:
 
